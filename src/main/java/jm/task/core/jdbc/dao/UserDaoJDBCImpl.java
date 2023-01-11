@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
 
-    Connection connection = Util.getConnection();
+    private final Connection connection = Util.getConnection();
 
     public UserDaoJDBCImpl() {
 
@@ -20,13 +20,7 @@ public class UserDaoJDBCImpl implements UserDao {
         String sql = "CREATE TABLE IF NOT EXISTS user(id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(30), lastName VARCHAR(50), age INT )";
         try (Statement statement = connection.createStatement()) {
             statement.execute(sql);
-            connection.commit();
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         }
     }
@@ -35,13 +29,7 @@ public class UserDaoJDBCImpl implements UserDao {
         String sql = "DROP TABLE IF EXISTS user";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
-            connection.commit();
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         }
 
@@ -55,7 +43,7 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setByte(3, age);
             preparedStatement.executeUpdate();
             connection.commit();
-            System.out.println("User с именем – " + name + " " +lastName + " добавлен в базу данных");
+            System.out.println("User с именем – " + name + " " + lastName + " добавлен в базу данных");
         } catch (SQLException e) {
             try {
                 connection.rollback();
@@ -81,8 +69,6 @@ public class UserDaoJDBCImpl implements UserDao {
             }
             throw new RuntimeException(e);
         }
-
-
     }
 
     public List<User> getAllUsers() {
@@ -114,13 +100,7 @@ public class UserDaoJDBCImpl implements UserDao {
         String sql = "TRUNCATE TABLE user";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
-            connection.commit();
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         }
 
